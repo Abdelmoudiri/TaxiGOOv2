@@ -9,49 +9,57 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+// class LoginNotificationMail extends Mailable
+// {
+//     use Queueable, SerializesModels;
+
+
+//     public $userName;
+//     public $loginTime;
+//     public function __construct(string $userName)
+//     {
+//         $this->userName = $userName;
+//         $this->loginTime = now()->format('Y-m-d H:i:s');
+//     }
+
+//     public function envelope(): Envelope
+//     {
+//         return new Envelope(
+//             subject: 'Login Notification Mail',
+//         );
+//     }
+
+//     public function content(): Content
+//     {
+//         return new Content(
+//             view: 'emails.login-notification',
+//         );
+//     }
+
+//     public function attachments(): array
+//     {
+//         return [];
+//     }
+// }
+
 class LoginNotificationMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
-    /**
-     * Create a new message instance.
-     */
-    //add this this
-    public $userName;
+    public $fullName;
     public $loginTime;
-    public function __construct(string $userName)
+
+    public function __construct($firstname, $lastname, $loginTime)
     {
-        $this->userName = $userName;
-        $this->loginTime = now()->format('Y-m-d H:i:s');
+        $this->fullName = $firstname . ' ' . $lastname;
+        $this->loginTime = $loginTime;
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function build()
     {
-        return new Envelope(
-            subject: 'Login Notification Mail',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.login-notification',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        return $this->view('emails.login-notification')
+            ->subject('Login Notification')
+            ->with([
+                'fullName' => $this->fullName,
+                'loginTime' => $this->loginTime,
+            ]);
     }
 }

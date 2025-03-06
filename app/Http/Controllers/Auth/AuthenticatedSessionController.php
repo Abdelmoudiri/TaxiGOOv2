@@ -31,8 +31,10 @@ class AuthenticatedSessionController extends Controller
         if (Auth::attempt($attributes)) {
             $request->session()->regenerate();
 
+         
             $user = Auth::user();
-            Mail::to($user->email)->send(new LoginNotificationMail($user));
+            $loginTime = now()->format('Y-m-d H:i:s');
+            Mail::to($user->email)->send(new LoginNotificationMail($user->firstname, $user->lastname, $loginTime));
 
             return redirect()->intended('reservations');
         }
