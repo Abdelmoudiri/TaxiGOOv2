@@ -20,6 +20,19 @@
 
                 {{-- Authentication-based Links --}}
                 @auth
+                    {{-- Admin-specific Links --}}
+                    @if(Auth::user()->account_type == 'admin')
+                        <a href="/Admindashboard" class="text-gray-700 hover:text-blue-600 transition">
+                            Dashboard
+                        </a>
+                        <a href="/admin/users" class="text-gray-700 hover:text-blue-600 transition">
+                            Utilisateurs
+                        </a>
+                        <a href="/admin/reservations" class="text-gray-700 hover:text-blue-600 transition">
+                            Réservations
+                        </a>
+                    @endif
+
                     {{-- Passenger-specific Links --}}
                     @if(Auth::user()->account_type == 'passenger')
                         <a href="/reservations" class="text-gray-700 hover:text-blue-600 transition">
@@ -113,6 +126,19 @@
                         </a>
 
                         @auth
+                            {{-- Admin Mobile Links --}}
+                            @if(Auth::user()->account_type == 'admin')
+                                <a href="/admin/dashboard" class="block text-gray-700 hover:bg-blue-50 px-3 py-2 rounded-md">
+                                    Dashboard
+                                </a>
+                                <a href="/admin/users" class="block text-gray-700 hover:bg-blue-50 px-3 py-2 rounded-md">
+                                    Utilisateurs
+                                </a>
+                                <a href="/admin/reservations" class="block text-gray-700 hover:bg-blue-50 px-3 py-2 rounded-md">
+                                    Réservations
+                                </a>
+                            @endif
+
                             @if(Auth::user()->account_type == 'passenger')
                                 <a href="/reservations" class="block text-gray-700 hover:bg-blue-50 px-3 py-2 rounded-md">
                                     Mes Réservations

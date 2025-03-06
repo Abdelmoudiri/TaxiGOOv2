@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\RegistredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DriverController;
@@ -16,10 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('/', function () {
     return view('index');
 });
-Route::get('/admin',function()
-{
-    return view('dashboards.admin');
-});
+Route::get('/Admindashboard',[AdminController::class,"index"]);
 
 
 //payment
@@ -62,9 +60,11 @@ Route::middleware(['auth','is_driver:driver'])->group(function(){
 
 Route::middleware(['auth','is_passenger:passenger'])->group(function(){
     Route::get('/passenger',[PassengerController::class,'show']);
-    Route::post('/reserve',[ReservationController::class,'store']);
+    
     Route::get('/reservations/{id}',[ReservationController::class,'cancel']);
 });
+
+Route::post('/reserve',[ReservationController::class,'store']);
 
 Route::get('/logout',[AuthenticatedSessionController::class,'logout']);
 

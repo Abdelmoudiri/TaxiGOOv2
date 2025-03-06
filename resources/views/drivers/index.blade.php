@@ -232,7 +232,7 @@
         }
 
         document.getElementById('reservation-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+            
             // Add your form submission logic here
             console.log('Reservation submitted');
             const modal = document.getElementById('reservation-modal');

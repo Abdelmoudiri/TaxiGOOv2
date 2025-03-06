@@ -202,7 +202,7 @@
                 </div>
                 <input type="hidden" name="driverid" id="driverid">
                 <div class="flex space-x-4">
-                    <button 
+                    <button
                         type="submit" 
                         class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
                     >
@@ -248,12 +248,7 @@
         }
 
         // Handle form submission
-        document.getElementById('reservation-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Add your form submission logic here
-            console.log('Reservation submitted');
-            closeReservationModal();
-        });
+       
         @endauth
     </script>
 </body>

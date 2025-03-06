@@ -43,7 +43,7 @@ class ReservationController extends Controller
             'location'=>'required | string',
             'destination'=>'required | string'
         ]);
-
+    
         $validated['driver_id'] = $request->driverid;
         $validated['user_id'] = Auth::user()->id;
 
