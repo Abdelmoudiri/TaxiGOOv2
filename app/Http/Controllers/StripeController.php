@@ -2,88 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-
-use Illuminate\Http\RedirectResponse;
-use Stripe\Checkout\Session;
-use Stripe\Exception\ApiErrorException;
+use Illuminate\Http\Request;
 use Stripe\Stripe;
+use Stripe\Charge;
+use Stripe\Customer;
 
 class StripeController extends Controller
 {
-    /**
-     * @return View|Factory|Application
-     */
-    public function checkout(): View|Factory|Application
+    public function showForm()
     {
-        return view('checkout');
+        return view('payments.form');
     }
 
-    /**
-     * @return RedirectResponse
-     * @throws ApiErrorException
-     */
-    public function test(): RedirectResponse
+    public function handlePayment(Request $request)
     {
-        Stripe::setApiKey(config('stripe.test.sk'));
+        // Set the Stripe secret key from the config
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        $session = Session::create([
-            'line_items'  => [
-                [
-                    'price_data' => [
-                        'currency'     => 'gbp',
-                        'product_data' => [
-                            'name' => 'T-shirt',
-                        ],
-                        'unit_amount'  => 500,
-                    ],
-                    'quantity'   => 1,
-                ],
-            ],
-            'mode'        => 'payment',
-            'success_url' => route('success'),
-            'cancel_url'  => route('checkout'),
+        // Create a customer
+        $customer = Customer::create([
+            'email' => $request->email,
+            'source' => $request->stripeToken,
         ]);
 
-        return redirect()->away($session->url);
-    }
-
-    /**
-     * @return RedirectResponse
-     * @throws ApiErrorException
-     */
-    public function live(): RedirectResponse
-    {
-        Stripe::setApiKey(config('stripe.live.sk'));
-
-        $session = Session::create([
-            'line_items'  => [
-                [
-                    'price_data' => [
-                        'currency'     => 'gbp',
-                        'product_data' => [
-                            'name' => 'T-shirt',
-                        ],
-                        'unit_amount'  => 500,
-                    ],
-                    'quantity'   => 1,
-                ],
-            ],
-            'mode'        => 'payment',
-            'success_url' => route('success'),
-            'cancel_url'  => route('checkout'),
+        // Charge the customer
+        $charge = Charge::create([
+            'customer' => $customer->id,
+            'amount' => $request->amount * 100, // Amount in cents
+            'currency' => 'usd',
+            'description' => 'Payment for order #1234',
         ]);
 
-        return redirect()->away($session->url);
-    }
-
-    /**
-     * @return View|Factory|Application
-     */
-    public function success(): View|Factory|Application
-    {
-        return view('success');
+        // Handle successful payment (you can redirect, show a message, etc.)
+        return back()->with('success', 'Payment successful!');
     }
 }

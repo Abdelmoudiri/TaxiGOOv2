@@ -8,6 +8,7 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PassengerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\StripeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -19,6 +20,14 @@ Route::get('/admin',function()
 {
     return view('dashboards.admin');
 });
+
+
+//payment
+use App\Http\Controllers\PaymentController;
+
+Route::get('/payment', [StripeController::class, 'showForm']);
+Route::post('/payment', [StripeController::class, 'handlePayment'])->name('payment.handle');
+
 
 // google
 Route::get('/auth/google/redirect',[GoogleAuthController::class,'redirect']);
