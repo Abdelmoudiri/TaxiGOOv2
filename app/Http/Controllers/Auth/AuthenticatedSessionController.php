@@ -3,45 +3,52 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Mail\LoginNotificationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
 
 class AuthenticatedSessionController extends Controller
 {
-    
-    public function create(){
+    /**
+     * Show the login form.
+     */
+    public function create()
+    {
         return view("auth.login");
     }
 
-    public function login(Request $request){
+    /**
+     * Handle an authentication attempt.
+     */
+    public function login(Request $request)
+    {
+        $attributes = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $attributes = $request->validate(
-            [
-                'email'=>['required','email'],
-                'password'=>['required']
-            ]
-            );
-
-        if(Auth::attempt($attributes)){
-
+        if (Auth::attempt($attributes)) {
             $request->session()->regenerate();
-            
+
+            $user = Auth::user();
+            Mail::to($user->email)->send(new LoginNotificationMail($user));
+
             return redirect()->intended('reservations');
         }
 
         return back()->withErrors([
-            'email'=>'the provided crédentials do not mustch our records.',
- 
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
 
+    /**
+     * Handle user logout.
+     */
     public function logout(Request $request)
     {
         Auth::logout();
 
-        // Invalidate the session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
