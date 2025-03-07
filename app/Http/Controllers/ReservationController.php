@@ -49,7 +49,7 @@ class ReservationController extends Controller
 
         Reservation::create($validated);
 
-        return response()->json(['success' => 'votre réservation et créer avec succés']);
+        return view("payments.form",compact("validated"));
     }
 
     public function cancel($id){

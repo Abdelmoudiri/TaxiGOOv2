@@ -17,4 +17,8 @@ class Reservation extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function stripe()
+    {
+        $this->hasOne(Stripe::class);
+    }
 }

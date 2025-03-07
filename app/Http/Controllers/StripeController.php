@@ -33,6 +33,13 @@ class StripeController extends Controller
             'description' => 'Payment for order #1234',
         ]);
 
+        // Stripe->create([
+        //     'amount'=>$charge['amount'],
+        //     'user_id'=>Auth::user()->id,
+
+
+        // ])
+
         // Handle successful payment (you can redirect, show a message, etc.)
         return back()->with('success', 'Payment successful!');
     }
